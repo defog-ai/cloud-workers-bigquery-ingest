@@ -1,7 +1,9 @@
 # BigQuery Data Ingestion with Cloudflare Workers
 
 ## Overview
-This validates, cleans, and augments data sent from an HTTP request. And then stores it into a BigQuery table.
+This validates, cleans, and augments analytics data sent from a browser request, and then stores it into a BigQuery table. You can then use the data to do product and content analytics + create dashboards.
+
+An analytics library that you can use to capture data in the browser has also been open-sourced [here](https://github.com/Full-Stack-Data/browser-analytics-capture-js).
 
 ## Variables to change
 To create your Cloudflare Worker, change the following variables in [index.js](src/index.js). Then build, test, and deploy on Cloudflare Workers using `wrangler`. Additionally, you will have to change the Cloudflare Workers specific variables in `wrangler.toml`
