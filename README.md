@@ -13,6 +13,9 @@ To create your Cloudflare Worker, change the following variables in [index.js](s
 - `datasetName`: replace with your BigQuery dataset name
 - `tableName`: replace with your BigQuery table name
 
+## Contact
+Just reach out on Twitter [@rishdotblog](https://twitter.com/rishdotblog) for queries or help debugging
+
 ## BigQuery table setup
 Create a table with the following fields
 - `clientId`: TYPE:String
