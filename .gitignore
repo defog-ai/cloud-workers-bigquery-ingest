@@ -1,0 +1,7 @@
+*auth.json
+/node_modules
+/worker
+/dist
+*.DS_Store
+package-lock.json
+

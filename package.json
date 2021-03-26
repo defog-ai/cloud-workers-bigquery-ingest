@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "name": "fsd-data-ingestion",
+  "version": "1.0.0",
+  "description": "A serverless function for validating, cleaning, and augmenting analytics data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write '**/*.{js,css,json,md}'"
+  },
+  "author": "Rishabh Srivastava <rishabhsriv@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^1.18.2",
+    "webpack": "^5.25.1",
+    "webpack-cli": "^4.5.0"
+  },
+  "dependencies": {
+    "@google-cloud/bigquery": "^5.5.0",
+    "@sagi.io/workers-jwt": "^0.0.20",
+    "request": "^2.88.2",
+    "useragent": "^2.3.0",
+    "yamlparser": "^0.0.2"
+  }
+}
