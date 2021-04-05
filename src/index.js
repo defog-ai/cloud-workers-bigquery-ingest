@@ -51,7 +51,11 @@ async function handleRequest(request) {
     resolution,
     numLifetimePageviews,
     numLifetimeSessions,
-    isMobile
+    isMobile,
+    events,
+    source,
+    campaign,
+    medium
   } = JSON.parse(reqBody);
 
   const uastring = request.headers.get("User-Agent");
@@ -81,6 +85,44 @@ async function handleRequest(request) {
     region, //region/state of incoming request
     timezone //Timezone of the incoming request, e.g. "America/Chicago".
   } = reqCf;
+
+  // Format events data propertly by checking in with pre-stored events in CF Workers
+  const clientEvents = await CLIENT_EVENTS.get("ingestion_events_" + clientId, "json");
+  let event1Val, event2Val, event3Val, event4Val, event5Val, event6Val, event7Val, event8Val, event9Val, event10Val, eventsMap;
+  if (clientEvents != null) {
+    if (urlPath in clientEvents) {
+      eventsMap = clientEvents[urlPath];
+    } else {
+      eventsMap = clientEvents["generic"];
+    }
+    
+    for (const givenEvent in events) {
+      if (givenEvent in eventsMap) {
+        const eventValue = events[givenEvent]
+        if(eventsMap[givenEvent] === 1) {
+          event1Val = eventValue;
+        } else if(eventsMap[givenEvent] === 2) {
+          event2Val = eventValue;
+        } else if(eventsMap[givenEvent] === 3) {
+          event3Val = eventValue;
+        } else if(eventsMap[givenEvent] === 4) {
+          event4Val = eventValue;
+        } else if(eventsMap[givenEvent] === 5) {
+          event5Val = eventValue;
+        } else if(eventsMap[givenEvent] === 6) {
+          event6Val = eventValue;
+        } else if(eventsMap[givenEvent] === 7) {
+          event7Val = eventValue;
+        } else if(eventsMap[givenEvent] === 8) {
+          event8Val = eventValue;
+        } else if(eventsMap[givenEvent] === 9) {
+          event9Val = eventValue;
+        } else if(eventsMap[givenEvent] === 10) {
+          event10Val = eventValue;
+        }
+      }
+    }
+  }
 
   // Take the data and format it
   const row = {
@@ -114,7 +156,20 @@ async function handleRequest(request) {
     'pageId': pageId,
     'screenResolution': resolution,
     'numLifetimePageviews': numLifetimePageviews,
-    'numLifetimeSessions': numLifetimeSessions
+    'numLifetimeSessions': numLifetimeSessions,
+    'source': source,
+    'campaign': campaign,
+    'medium': medium,
+    'event1Val': event1Val,
+    'event2Val': event2Val,
+    'event3Val': event3Val,
+    'event4Val': event4Val,
+    'event5Val': event5Val,
+    'event6Val': event6Val,
+    'event7Val': event7Val,
+    'event8Val': event8Val,
+    'event9Val': event9Val,
+    'event10Val': event10Val
   };
 
   const payload = {
