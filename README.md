@@ -17,67 +17,268 @@ To create your Cloudflare Worker, change the following variables in [index.js](s
 Just reach out on Twitter [@rishdotblog](https://twitter.com/rishdotblog) for queries or help debugging
 
 ## BigQuery table setup
-Create a table in BigQuery with the following command
+Create a table in BigQuery with the following properties
 
 ```
-CREATE TABLE IF NOT EXISTS PROJECT_NAME.TABLE_NAME (
-  clientId STRING NOT NULL,
-  pageId STRING NOT NULL,
-  urlPath STRING NOT NULL,
-  uuid STRING NOT NULL,
-  sessionId STRING,
-  curTime TIMESTAMP NOT NULL,
-  uaString STRING,
-  deviceType STRING,
-  device STRING,
-  browser STRING,
-  browserVersion STRING,
-  referrer STRING,
-  referrerHost STRING,
-  sessionReferrer STRING,
-  os STRING,
-  ip STRING,
-  latitude FLOAT64,
-  longitude FLOAT64,
-  geoLatitude FLOAT64,
-  geoLongitude FLOAT64,
-  city STRING,
-  province STRING,
-  country STRING,
-  firstEverSession BOOLEAN,
-  firstEverPageview BOOLEAN,
-  sessionHitNum INT64,
-  activeLast24Hrs BOOLEAN,
-  activeLast7Days BOOLEAN,
-  screenResolution STRING,
-  numLifetimeSessions INT64,
-  numLifetimePageviews INT64,
-  timespent INT64,
-  maxDepth INT64,
-  source STRING,
-  campaign STRING,
-  medium STRING,
-  event1Count INT64,
-  event2Count INT64,
-  event3Count INT64,
-  event4Count INT64,
-  event5Count INT64,
-  event6Count INT64,
-  event7Count INT64,
-  event8Count INT64,
-  event9Count INT64,
-  event10Count INT64,
-  event1Values STRING,
-  event2Values STRING,
-  event3Values STRING,
-  event4Values STRING,
-  event5Values STRING,
-  event6Values STRING,
-  event7Values STRING,
-  event8Values STRING,
-  event9Values STRING,
-  event10Values STRING
-);
+[
+  {
+    "name": "client_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "page_id",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "url_path",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "uuid",
+    "type": "STRING",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "session_id",
+    "type": "STRING"
+  },
+  {
+    "name": "cur_time",
+    "type": "TIMESTAMP",
+    "mode": "REQUIRED"
+  },
+  {
+    "name": "ua_string",
+    "type": "STRING"
+  },
+  {
+    "name": "device_type",
+    "type": "STRING"
+  },
+  {
+    "name": "device",
+    "type": "STRING"
+  },
+  {
+    "name": "browser",
+    "type": "STRING"
+  },
+  {
+    "name": "browser_version",
+    "type": "STRING"
+  },
+  {
+    "name": "referrer",
+    "type": "STRING"
+  },
+  {
+    "name": "referrer_host",
+    "type": "STRING"
+  },
+  {
+    "name": "session_referrer",
+    "type": "STRING"
+  },
+  {
+    "name": "os",
+    "type": "STRING"
+  },
+  {
+    "name": "os_version",
+    "type": "STRING"
+  },
+  {
+    "name": "ip",
+    "type": "STRING"
+  },
+  {
+    "name": "latitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "longitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "geo_latitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "geo_longitude",
+    "type": "FLOAT"
+  },
+  {
+    "name": "city",
+    "type": "STRING"
+  },
+  {
+    "name": "province",
+    "type": "STRING"
+  },
+  {
+    "name": "country",
+    "type": "STRING"
+  },
+  {
+    "name": "pincode",
+    "type": "STRING"
+  },
+  {
+    "name": "timezone",
+    "type": "STRING"
+  },
+  {
+    "name": "asn",
+    "type": "STRING"
+  },
+  {
+    "name": "colo",
+    "type": "STRING"
+  },
+  {
+    "name": "first_ever_session",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "first_ever_pageview",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "session_hit_num",
+    "type": "INTEGER"
+  },
+  {
+    "name": "active_last_24hrs",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "active_last_7days",
+    "type": "BOOLEAN"
+  },
+  {
+    "name": "screen_resolution",
+    "type": "STRING"
+  },
+  {
+    "name": "screen_height_px",
+    "type": "INTEGER"
+  },
+  {
+    "name": "screen_width_px",
+    "type": "INTEGER"
+  },
+  {
+    "name": "num_lifetime_sessions",
+    "type": "INTEGER"
+  },
+  {
+    "name": "num_lifetime_pageviews",
+    "type": "INTEGER"
+  },
+  {
+    "name": "time_spent",
+    "type": "INTEGER"
+  },
+  {
+    "name": "max_depth",
+    "type": "INTEGER"
+  },
+  {
+    "name": "source",
+    "type": "STRING"
+  },
+  {
+    "name": "campaign",
+    "type": "STRING"
+  },
+  {
+    "name": "medium",
+    "type": "STRING"
+  },
+  {
+    "name": "event1_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event2_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event3_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event4_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event5_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event6_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event7_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event8_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event9_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event10_count",
+    "type": "INTEGER"
+  },
+  {
+    "name": "event1_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event2_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event3_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event4_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event5_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event6_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event7_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event8_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event9_values",
+    "type": "STRING"
+  },
+  {
+    "name": "event10_values",
+    "type": "STRING"
+  }
+]
 ```
 
 ## Usage
@@ -86,4 +287,4 @@ Get your URL after setting this up on Cloudflare workers. Then, replace the `ser
 ## Roadmap
 - [Done] Create a front-end JS script for capturing data
 - [Done] Create a serverless function for capturing pageviews data
-- [Todo] Add capture of custom event data to the front-end JS script and the serverless function
+- [Done] Add capture of custom event data to the front-end JS script and the serverless function
