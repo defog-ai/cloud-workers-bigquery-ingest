@@ -27,9 +27,10 @@ async function handleRequest(request) {
   const tableName = "YOUR_TABLE_NAME"; //replace with your own
   
   const token = await getTokenFromGCPServiceAccount({ serviceAccountJSON, aud} );
-  
-  const t_now = new Date;
+
+  const t_now = new Date;  
   const reqBody = await request.text();
+  
   const reqCf = request.cf;
   
   const {
@@ -52,7 +53,8 @@ async function handleRequest(request) {
     numLifetimePageviews,
     numLifetimeSessions,
     isMobile,
-    events,
+    eventCounts,
+    eventNames,
     source,
     campaign,
     medium
@@ -85,40 +87,51 @@ async function handleRequest(request) {
     region, //region/state of incoming request
     timezone //Timezone of the incoming request, e.g. "America/Chicago".
   } = reqCf;
-
+  
   // Format events data propertly by checking in with pre-stored events in CF Workers
-  const clientEvents = await CLIENT_EVENTS.get("ingestion_events_" + clientId, "json");
-  let event1Val, event2Val, event3Val, event4Val, event5Val, event6Val, event7Val, event8Val, event9Val, event10Val, eventsMap;
+  // const clientEvents = await CLIENT_EVENTS.get("ingestion_events_" + clientId, "json");
+  const clientEvents = {
+    "generic": {
+      "click_dropdown": 1,
+      "click_button": 2,
+      "click_sort_toggle": 3
+    }
+  }
+
+  let event1Values, event2Values, event3Values, event4Values, event5Values, event6Values, event7Values, event8Values, event9Values, event10Values;
+
+  let eventsMap;
   if (clientEvents != null) {
     if (urlPath in clientEvents) {
       eventsMap = clientEvents[urlPath];
     } else {
       eventsMap = clientEvents["generic"];
     }
-    
-    for (const givenEvent in events) {
+
+    // Then, get event names
+    for (const givenEvent in eventNames) {
       if (givenEvent in eventsMap) {
-        const eventValue = events[givenEvent]
+        const eventsList = eventNames[givenEvent].join("||");
         if(eventsMap[givenEvent] === 1) {
-          event1Val = eventValue;
+          event1Values = eventsList;
         } else if(eventsMap[givenEvent] === 2) {
-          event2Val = eventValue;
+          event2Values = eventsList;
         } else if(eventsMap[givenEvent] === 3) {
-          event3Val = eventValue;
+          event3Values = eventsList;
         } else if(eventsMap[givenEvent] === 4) {
-          event4Val = eventValue;
+          event4Values = eventsList;
         } else if(eventsMap[givenEvent] === 5) {
-          event5Val = eventValue;
+          event5Values = eventsList;
         } else if(eventsMap[givenEvent] === 6) {
-          event6Val = eventValue;
+          event6Values = eventsList;
         } else if(eventsMap[givenEvent] === 7) {
-          event7Val = eventValue;
+          event7Values = eventsList;
         } else if(eventsMap[givenEvent] === 8) {
-          event8Val = eventValue;
+          event8Values = eventsList;
         } else if(eventsMap[givenEvent] === 9) {
-          event9Val = eventValue;
+          event9Values = eventsList;
         } else if(eventsMap[givenEvent] === 10) {
-          event10Val = eventValue;
+          event10Values = eventsList;
         }
       }
     }
@@ -126,56 +139,60 @@ async function handleRequest(request) {
 
   // Take the data and format it
   const row = {
-    'clientId': clientId,
-    'urlPath': urlPath,
+    'client_id': clientId,
+    'url_path': urlPath,
     'uuid': uuid,
-    'sessionId': sessionId,
-    'curTime': t_now.toISOString(),
-    'uaString': uastring,
-    'deviceType': deviceType,
+    'session_id': sessionId,
+    'cur_time': t_now.toISOString(),
+    'ua_string': uastring,
+    'device_type': deviceType,
     'device': device,
     'browser': browser,
-    'browserVersion': browserVersion,
+    'browser_version': browserVersion,
     'os': os,
-    'osVersion': osVersion,
+    'os_version': osVersion,
     'referrer': referrer,
-    'referrerHost': referrerHost,
-    'sessionReferrer': sessionReferrer,
+    'referrer_host': referrerHost,
+    'session_referrer': sessionReferrer,
     'ip': ip,
     'latitude': latitude,
     'longitude': longitude,
     'city': city,
+    'province': region,
     'country': country,
-    'timeSpent': timeSpent,
-    'maxDepth': maxDepth,
-    'firstEverSession': firstEverSession,
-    'firstEverPageview': firstEverPageview,
-    'sessionHitNum': sessionHitNum,
-    'activeLast24Hrs': activeLast24Hrs,
-    'activeLast7Days': activeLast7Days,
-    'pageId': pageId,
-    'screenResolution': resolution,
-    'numLifetimePageviews': numLifetimePageviews,
-    'numLifetimeSessions': numLifetimeSessions,
+    'pincode': postalCode,
+    'asn': asn,
+    'colo': colo,
+    'timezone': timezone,
+    'time_spent': parseInt(timeSpent),
+    'max_depth': parseInt(100*maxDepth),
+    'first_ever_session': firstEverSession,
+    'first_ever_pageview': firstEverPageview,
+    'session_hit_num': sessionHitNum,
+    'active_last_24hrs': activeLast24Hrs,
+    'active_last_7days': activeLast7Days,
+    'page_id': pageId,
+    'screen_resolution': resolution,
+    'num_lifetime_pageviews': numLifetimePageviews,
+    'num_lifetime_sessions': numLifetimeSessions,
     'source': source,
     'campaign': campaign,
     'medium': medium,
-    'event1Val': event1Val,
-    'event2Val': event2Val,
-    'event3Val': event3Val,
-    'event4Val': event4Val,
-    'event5Val': event5Val,
-    'event6Val': event6Val,
-    'event7Val': event7Val,
-    'event8Val': event8Val,
-    'event9Val': event9Val,
-    'event10Val': event10Val
+    'event10_count': event10Count,
+    'event1_values': event1Values,
+    'event2_values': event2Values,
+    'event3_values': event3Values,
+    'event4_values': event4Values,
+    'event5_values': event5Values,
+    'event6_values': event6Values,
+    'event7_values': event7Values,
+    'event8_values': event8Values,
+    'event9_values': event9Values,
+    'event10_values': event10Values
   };
-
+  
   const payload = {
     "kind": "bigquery#tableDataInsertAllResponse",
-    // "skipInvalidRows": true,
-    // "ignoreUnknownValues": true,
     "rows": [
       {
         "insertId": row['pageId'],
@@ -194,6 +211,9 @@ async function handleRequest(request) {
       "Authorization": "Bearer " + token
     }
   });
+
+  // const respData  = await bqResp.text();
+  // console.log(respData);
 
   return new Response("success", {status: 200, headers: {'Content-Type': "application/json", 'Access-Control-Allow-Origin': '*'}});
 }
